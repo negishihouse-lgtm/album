@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+<title>Album Editor</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    background:#0b0b0b;
+    color:white;
+    font-family:-apple-system,BlinkMacSystemFont,sans-serif;
+}
+
+.wrapper{
+    display:flex;
+    min-height:100vh;
+}
+
+/* =========================
+   SIDEBAR
+========================= */
+
+.sidebar{
+    width:320px;
+    background:#111;
+    border-right:1px solid rgba(255,255,255,0.08);
+    overflow-y:auto;
+}
+
+.sidebar-header{
+    padding:25px;
+    border-bottom:1px solid rgba(255,255,255,0.08);
+}
+
+.sidebar-title{
+    font-size:26px;
+    font-weight:700;
+}
+
+.album-list{
+    padding:15px;
+}
+
+.album-card{
+    display:flex;
+    gap:15px;
+    padding:12px;
+    border:1px solid rgba(255,255,255,0.08);
+    margin-bottom:12px;
+    cursor:pointer;
+    background:#151515;
+    transition:0.2s;
+}
+
+.album-card:hover{
+    background:#1d1d1d;
+}
+
+.album-thumb{
+    width:70px;
+    height:70px;
+    object-fit:cover;
+}
+
+.album-info{
+    flex:1;
+}
+
+.album-name{
+    font-size:16px;
+    font-weight:700;
+    margin-bottom:6px;
+}
+
+.album-artist{
+    color:#aaa;
+    font-size:14px;
+}
+
+.delete-btn{
+    margin-top:8px;
+    background:#333;
+    border:none;
+    color:white;
+    padding:6px 10px;
+    cursor:pointer;
+}
+
+/* =========================
+   MAIN
+========================= */
+
+.main{
+    flex:1;
+    padding:40px;
+}
+
+.form-area{
+    width:520px;
+    background:#151515;
+    padding:30px;
+    border:1px solid rgba(255,255,255,0.1);
+}
+
+.input-group{
+    margin-bottom:22px;
+}
+
+.input-group label{
+    display:block;
+    margin-bottom:8px;
+    color:#aaa;
+}
+
+input,
+textarea{
+    width:100%;
+    padding:14px;
+    background:#0f0f0f;
+    border:1px solid #333;
+    color:white;
+    font-size:15px;
+}
+
+textarea{
+    height:160px;
+    resize:none;
+    line-height:1.8;
+}
+
+.slider-label{
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:8px;
+    color:#aaa;
+}
+
+button{
+    width:100%;
+    padding:15px;
+    margin-top:12px;
+    border:none;
+    cursor:pointer;
+    color:white;
+    font-size:16px;
+}
+
+.view-btn{
+    background:#6fa8dc;
+}
+
+.save-btn{
+    background:#4caf50;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="wrapper">
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+
+        <div class="sidebar-header">
+
+            <div class="sidebar-title">
+                Saved Albums
+            </div>
+
+        </div>
+
+        <div class="album-list"
+             id="albumList"></div>
+
+    </div>
+
+    <!-- MAIN -->
+    <div class="main">
+
+        <div class="form-area">
+
+            <div class="input-group">
+
+                <label>
+                    ジャケット画像URL
+                </label>
+
+                <input
+                    id="coverInput"
+                    type="text">
+
+            </div>
+
+            <div class="input-group">
+
+                <label>
+                    アルバム名
+                </label>
+
+                <input
+                    id="titleInput"
+                    type="text">
+
+            </div>
+
+            <div class="input-group">
+
+                <label>
+                    アーティスト名
+                </label>
+
+                <input
+                    id="artistInput"
+                    type="text">
+
+            </div>
+
+            <div class="input-group">
+
+                <label>
+                    発表年
+                </label>
+
+                <input
+                    id="yearInput"
+                    type="text">
+
+            </div>
+
+            <div class="input-group">
+
+                <label>
+                    紹介文
+                </label>
+
+                <textarea
+                    id="descInput"></textarea>
+
+            </div>
+
+            <div class="input-group">
+
+                <label>
+                    キーワード
+                </label>
+
+                <input
+                    id="keywordsInput"
+                    type="text"
+
+                    placeholder=
+                    "例：孤独 / 夜 / 不安 / 都市">
+
+            </div>
+
+            <!-- sliders -->
+
+            <div class="input-group">
+
+                <div class="slider-label">
+
+                    <span>暗い</span>
+                    <span>明るい</span>
+
+                </div>
+
+                <input
+                    id="darknessInput"
+                    type="range"
+                    min="1"
+                    max="5"
+                    value="3">
+
+            </div>
+
+            <div class="input-group">
+
+                <div class="slider-label">
+
+                    <span>静か</span>
+                    <span>激しい</span>
+
+                </div>
+
+                <input
+                    id="intenseInput"
+                    type="range"
+                    min="1"
+                    max="5"
+                    value="3">
+
+            </div>
+
+            <div class="input-group">
+
+                <div class="slider-label">
+
+                    <span>シンプル</span>
+                    <span>複雑</span>
+
+                </div>
+
+                <input
+                    id="complexInput"
+                    type="range"
+                    min="1"
+                    max="5"
+                    value="3">
+
+            </div>
+
+            <div class="input-group">
+
+                <div class="slider-label">
+
+                    <span>希望</span>
+                    <span>絶望</span>
+
+                </div>
+
+                <input
+                    id="hopeInput"
+                    type="range"
+                    min="1"
+                    max="5"
+                    value="3">
+
+            </div>
+
+            <div class="input-group">
+
+                <div class="slider-label">
+
+                    <span>個人</span>
+                    <span>世界</span>
+
+                </div>
+
+                <input
+                    id="worldInput"
+                    type="range"
+                    min="1"
+                    max="5"
+                    value="3">
+
+            </div>
+
+            <button
+                class="view-btn"
+                onclick="openViewer()">
+
+                表示ページを開く
+
+            </button>
+
+            <button
+                class="save-btn"
+                onclick="saveAlbum()">
+
+                保存
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+function getFormData(){
+
+    return {
+
+        cover:
+        document.getElementById(
+            "coverInput").value,
+
+        title:
+        document.getElementById(
+            "titleInput").value,
+
+        artist:
+        document.getElementById(
+            "artistInput").value,
+
+        year:
+        document.getElementById(
+            "yearInput").value,
+
+        desc:
+        document.getElementById(
+            "descInput").value,
+
+        keywords:
+        document.getElementById(
+            "keywordsInput").value,
+
+        darkness:
+        document.getElementById(
+            "darknessInput").value,
+
+        intense:
+        document.getElementById(
+            "intenseInput").value,
+
+        complex:
+        document.getElementById(
+            "complexInput").value,
+
+        hope:
+        document.getElementById(
+            "hopeInput").value,
+
+        world:
+        document.getElementById(
+            "worldInput").value
+    };
+}
+
+function openViewer(){
+
+    window.open(
+        "index.html",
+        "_blank"
+    );
+}
+
+function saveAlbum(){
+
+    const data = getFormData();
+
+    let albums =
+        JSON.parse(
+            localStorage.getItem(
+                "albums"
+            )
+        ) || [];
+
+    albums.push(data);
+
+    localStorage.setItem(
+        "albums",
+        JSON.stringify(albums)
+    );
+
+    renderAlbumList();
+}
+
+function loadAlbum(index){
+
+    let albums =
+        JSON.parse(
+            localStorage.getItem(
+                "albums"
+            )
+        ) || [];
+
+    const album = albums[index];
+
+    document.getElementById(
+        "coverInput").value =
+        album.cover;
+
+    document.getElementById(
+        "titleInput").value =
+        album.title;
+
+    document.getElementById(
+        "artistInput").value =
+        album.artist;
+
+    document.getElementById(
+        "yearInput").value =
+        album.year;
+
+    document.getElementById(
+        "descInput").value =
+        album.desc;
+
+    document.getElementById(
+        "keywordsInput").value =
+        album.keywords || "";
+
+    document.getElementById(
+        "darknessInput").value =
+        album.darkness;
+
+    document.getElementById(
+        "intenseInput").value =
+        album.intense;
+
+    document.getElementById(
+        "complexInput").value =
+        album.complex;
+
+    document.getElementById(
+        "hopeInput").value =
+        album.hope;
+
+    document.getElementById(
+        "worldInput").value =
+        album.world;
+}
+
+function deleteAlbum(event,index){
+
+    event.stopPropagation();
+
+    let albums =
+        JSON.parse(
+            localStorage.getItem(
+                "albums"
+            )
+        ) || [];
+
+    albums.splice(index,1);
+
+    localStorage.setItem(
+        "albums",
+        JSON.stringify(albums)
+    );
+
+    renderAlbumList();
+}
+
+function renderAlbumList(){
+
+    const albumList =
+        document.getElementById(
+            "albumList");
+
+    albumList.innerHTML = "";
+
+    let albums =
+        JSON.parse(
+            localStorage.getItem(
+                "albums"
+            )
+        ) || [];
+
+    albums.forEach((album,index)=>{
+
+        albumList.innerHTML += `
+
+        <div class="album-card"
+             onclick="loadAlbum(${index})">
+
+            <img
+                class="album-thumb"
+                src="${album.cover}">
+
+            <div class="album-info">
+
+                <div class="album-name">
+                    ${album.title}
+                </div>
+
+                <div class="album-artist">
+                    ${album.artist}
+                </div>
+
+                <button
+                    class="delete-btn"
+
+                    onclick=
+                    "deleteAlbum(event,${index})">
+
+                    削除
+
+                </button>
+
+            </div>
+
+        </div>
+        `;
+    });
+}
+
+renderAlbumList();
+
+</script>
+
+</body>
+</html>
